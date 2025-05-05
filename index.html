@@ -37,20 +37,14 @@
     <div id="imageContainer"></div>
 
     <script>
-      // Function to fetch all images from the images directory
+      // Function to load images from a predefined JSON file
       async function loadImages() {
         try {
-          const response = await fetch('/images');
-          const text = await response.text();
-          const parser = new DOMParser();
-          const html = parser.parseFromString(text, 'text/html');
-          const links = Array.from(html.querySelectorAll('a'))
-            .map((a) => a.href)
-            .filter((href) => href.match(/\.(jpg|jpeg|png|gif)$/i))
-            .map((href) => href.split('/').pop());
+          const response = await fetch('./images/images.json');
+          const imageNames = await response.json();
 
           const container = document.getElementById('imageContainer');
-          links.forEach((imageName, index) => {
+          imageNames.forEach((imageName, index) => {
             const img = document.createElement('img');
             img.src = `./images/${imageName}`;
             img.alt = `Wedding Image ${index + 1}`;
@@ -58,7 +52,7 @@
             container.appendChild(img);
           });
 
-          return links.length;
+          return imageNames.length;
         } catch (error) {
           console.error('Error loading images:', error);
           return 0;
