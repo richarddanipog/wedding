@@ -11,7 +11,7 @@
         padding: 0;
         height: 100vh;
         width: 100vw;
-        background: black; /* or white or any color you like */
+        background: black;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -20,10 +20,73 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        display: none;
+      }
+      img.active {
+        display: block;
+      }
+      #imageContainer {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
       }
     </style>
   </head>
   <body>
-    <img src="./wedding.jpg" alt="Wedding Image" />
+    <div id="imageContainer"></div>
+
+    <script>
+      // Function to fetch all images from the images directory
+      async function loadImages() {
+        try {
+          const response = await fetch('/images');
+          const text = await response.text();
+          const parser = new DOMParser();
+          const html = parser.parseFromString(text, 'text/html');
+          const links = Array.from(html.querySelectorAll('a'))
+            .map((a) => a.href)
+            .filter((href) => href.match(/\.(jpg|jpeg|png|gif)$/i))
+            .map((href) => href.split('/').pop());
+
+          const container = document.getElementById('imageContainer');
+          links.forEach((imageName, index) => {
+            const img = document.createElement('img');
+            img.src = `./images/${imageName}`;
+            img.alt = `Wedding Image ${index + 1}`;
+            if (index === 0) img.classList.add('active');
+            container.appendChild(img);
+          });
+
+          return links.length;
+        } catch (error) {
+          console.error('Error loading images:', error);
+          return 0;
+        }
+      }
+
+      // Initialize the slideshow
+      async function initSlideshow() {
+        const imageCount = await loadImages();
+        if (imageCount === 0) {
+          console.error('No images found in the images directory');
+          return;
+        }
+
+        const images = document.querySelectorAll('img');
+        let currentIndex = 0;
+
+        function switchImage() {
+          images[currentIndex].classList.remove('active');
+          currentIndex = (currentIndex + 1) % images.length;
+          images[currentIndex].classList.add('active');
+        }
+
+        setInterval(switchImage, 2000);
+      }
+
+      // Start the slideshow
+      initSlideshow();
+    </script>
   </body>
 </html>
