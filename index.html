@@ -69,10 +69,39 @@
 
         const images = document.querySelectorAll('img');
         let currentIndex = 0;
+        let remainingImages = [];
+
+        function shuffleArray(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        }
+
+        function getNextImage() {
+          if (remainingImages.length === 0) {
+            // Reset with all images except the current one
+            remainingImages = Array.from(
+              { length: images.length },
+              (_, i) => i
+            ).filter((i) => i !== currentIndex);
+            remainingImages = shuffleArray(remainingImages);
+          }
+          return remainingImages.pop();
+        }
 
         function switchImage() {
           images[currentIndex].classList.remove('active');
-          currentIndex = (currentIndex + 1) % images.length;
+
+          if (currentIndex === 0) {
+            // After first image, start random sequence
+            currentIndex = getNextImage();
+          } else {
+            // Continue with next image in shuffled sequence
+            currentIndex = getNextImage();
+          }
+
           images[currentIndex].classList.add('active');
         }
 
