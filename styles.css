@@ -1,0 +1,52 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100dvh;
+  width: 100dvw;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.5s ease-in-out;
+  will-change: opacity;
+}
+
+img.active {
+  opacity: 1;
+}
+
+#imageContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.loading {
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #ff4444;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 1rem;
+}
